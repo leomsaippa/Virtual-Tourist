@@ -15,6 +15,10 @@
 		A30AFDB1261CFA93004446A4 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30AFDB0261CFA93004446A4 /* MapViewController.swift */; };
 		A30AFDB5261D562D004446A4 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30AFDB4261D562D004446A4 /* DataController.swift */; };
 		A3349AE3261E906D0014EBD1 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AE2261E906D0014EBD1 /* ViewExtension.swift */; };
+		A3349AEA262148010014EBD1 /* FlickrApiCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AE9262148010014EBD1 /* FlickrApiCall.swift */; };
+		A3349AED262223440014EBD1 /* PhotoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AEC262223440014EBD1 /* PhotoResponse.swift */; };
+		A3349AF0262223810014EBD1 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AEF262223810014EBD1 /* Photo.swift */; };
+		A3349AF3262233ED0014EBD1 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AF2262233ED0014EBD1 /* RequestHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +32,10 @@
 		A30AFDB0261CFA93004446A4 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		A30AFDB4261D562D004446A4 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		A3349AE2261E906D0014EBD1 /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
+		A3349AE9262148010014EBD1 /* FlickrApiCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrApiCall.swift; sourceTree = "<group>"; };
+		A3349AEC262223440014EBD1 /* PhotoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoResponse.swift; sourceTree = "<group>"; };
+		A3349AEF262223810014EBD1 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		A3349AF2262233ED0014EBD1 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +68,7 @@
 		A30AFD91261CF4D1004446A4 /* Virtual Tourist */ = {
 			isa = PBXGroup;
 			children = (
+				A3349AE8262147EF0014EBD1 /* Network */,
 				A30AFDAD261CF8DD004446A4 /* View */,
 				A30AFDAC261CF8CE004446A4 /* ViewControllers */,
 				A30AFDA3261CF4D3004446A4 /* Info.plist */,
@@ -93,8 +102,19 @@
 			children = (
 				A30AFD9B261CF4D1004446A4 /* Virtual_Tourist.xcdatamodeld */,
 				A30AFDB4261D562D004446A4 /* DataController.swift */,
+				A3349AEF262223810014EBD1 /* Photo.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		A3349AE8262147EF0014EBD1 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				A3349AE9262148010014EBD1 /* FlickrApiCall.swift */,
+				A3349AEC262223440014EBD1 /* PhotoResponse.swift */,
+				A3349AF2262233ED0014EBD1 /* RequestHelper.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,7 +187,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3349AF0262223810014EBD1 /* Photo.swift in Sources */,
 				A30AFD9D261CF4D1004446A4 /* Virtual_Tourist.xcdatamodeld in Sources */,
+				A3349AEA262148010014EBD1 /* FlickrApiCall.swift in Sources */,
+				A3349AF3262233ED0014EBD1 /* RequestHelper.swift in Sources */,
+				A3349AED262223440014EBD1 /* PhotoResponse.swift in Sources */,
 				A30AFDB5261D562D004446A4 /* DataController.swift in Sources */,
 				A30AFD93261CF4D1004446A4 /* AppDelegate.swift in Sources */,
 				A30AFDB1261CFA93004446A4 /* MapViewController.swift in Sources */,
