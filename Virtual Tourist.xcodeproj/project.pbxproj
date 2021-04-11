@@ -17,8 +17,10 @@
 		A3349AE3261E906D0014EBD1 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AE2261E906D0014EBD1 /* ViewExtension.swift */; };
 		A3349AEA262148010014EBD1 /* FlickrApiCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AE9262148010014EBD1 /* FlickrApiCall.swift */; };
 		A3349AED262223440014EBD1 /* PhotoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AEC262223440014EBD1 /* PhotoResponse.swift */; };
-		A3349AF0262223810014EBD1 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AEF262223810014EBD1 /* Photo.swift */; };
+		A3349AF0262223810014EBD1 /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AEF262223810014EBD1 /* PhotoModel.swift */; };
 		A3349AF3262233ED0014EBD1 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AF2262233ED0014EBD1 /* RequestHelper.swift */; };
+		A3349AF726227A650014EBD1 /* PinExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AF626227A650014EBD1 /* PinExtension.swift */; };
+		A3349AFB26227A870014EBD1 /* PhotoExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3349AFA26227A870014EBD1 /* PhotoExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,8 +36,10 @@
 		A3349AE2261E906D0014EBD1 /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
 		A3349AE9262148010014EBD1 /* FlickrApiCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickrApiCall.swift; sourceTree = "<group>"; };
 		A3349AEC262223440014EBD1 /* PhotoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoResponse.swift; sourceTree = "<group>"; };
-		A3349AEF262223810014EBD1 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		A3349AEF262223810014EBD1 /* PhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoModel.swift; sourceTree = "<group>"; };
 		A3349AF2262233ED0014EBD1 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
+		A3349AF626227A650014EBD1 /* PinExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinExtension.swift; sourceTree = "<group>"; };
+		A3349AFA26227A870014EBD1 /* PhotoExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,9 +104,10 @@
 		A30AFDAE261CF93D004446A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A3349AF526227A3D0014EBD1 /* Managed Object Extension */,
 				A30AFD9B261CF4D1004446A4 /* Virtual_Tourist.xcdatamodeld */,
 				A30AFDB4261D562D004446A4 /* DataController.swift */,
-				A3349AEF262223810014EBD1 /* Photo.swift */,
+				A3349AEF262223810014EBD1 /* PhotoModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -115,6 +120,15 @@
 				A3349AF2262233ED0014EBD1 /* RequestHelper.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		A3349AF526227A3D0014EBD1 /* Managed Object Extension */ = {
+			isa = PBXGroup;
+			children = (
+				A3349AF626227A650014EBD1 /* PinExtension.swift */,
+				A3349AFA26227A870014EBD1 /* PhotoExtension.swift */,
+			);
+			path = "Managed Object Extension";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -187,9 +201,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3349AF0262223810014EBD1 /* Photo.swift in Sources */,
+				A3349AF0262223810014EBD1 /* PhotoModel.swift in Sources */,
+				A3349AFB26227A870014EBD1 /* PhotoExtension.swift in Sources */,
 				A30AFD9D261CF4D1004446A4 /* Virtual_Tourist.xcdatamodeld in Sources */,
 				A3349AEA262148010014EBD1 /* FlickrApiCall.swift in Sources */,
+				A3349AF726227A650014EBD1 /* PinExtension.swift in Sources */,
 				A3349AF3262233ED0014EBD1 /* RequestHelper.swift in Sources */,
 				A3349AED262223440014EBD1 /* PhotoResponse.swift in Sources */,
 				A30AFDB5261D562D004446A4 /* DataController.swift in Sources */,

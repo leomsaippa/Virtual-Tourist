@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct Photo: Codable {
+struct PhotoModel: Codable {
     var photoImage: UIImage?
     let id, owner, secret, server: String
     let farm: Int
