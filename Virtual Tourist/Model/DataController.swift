@@ -64,4 +64,36 @@ extension DataController {
             self.autoSaveCurrentContext(interval: interval)
         }
     }
+    
+    func fetchLocation(_ predicate: NSPredicate, sorting: NSSortDescriptor? = nil) throws -> Pin? {
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        fr.predicate = predicate
+        if let sorting = sorting {
+            fr.sortDescriptors = [sorting]
+        }
+        guard let location = (try viewContext.fetch(fr) as! [Pin]).first else {
+            return nil
+        }
+        return location
+    }
+    
+    func fetchAllLocation() throws -> [Pin]? {
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        guard let pin = try viewContext.fetch(fr) as? [Pin] else {
+            return nil
+        }
+        return pin
+    }
+    
+    func fetchAllPhoto(_ predicate: NSPredicate? = nil, sorting: NSSortDescriptor? = nil) throws -> [Photo]? {
+        let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
+        fr.predicate = predicate
+        if let sorting = sorting {
+            fr.sortDescriptors = [sorting]
+        }
+        guard let allPhoto = try viewContext.fetch(fr) as? [Photo] else {
+            return nil
+        }
+        return allPhoto
+    }
 }
