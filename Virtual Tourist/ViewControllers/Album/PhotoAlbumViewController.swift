@@ -26,24 +26,31 @@ class PhotoAlbumViewController: UIViewController {
     var fetchedResultsController: NSFetchedResultsController<Photo>!
     var pin: Pin!
     var dataController: DataController!
-    
+    var photos: [Photo]!
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-      guard let pin = pin else {
-            showAlert(title: "Failed to load photo", message: "Fail to load photo album. Try Again!!")
-            fatalError("Error while loading photo album")
-        }
-        
-        navTitle.title = pin.locationName ?? "Album"
         setUpCollectionView()
+        
+        activityIndicator.style = UIActivityIndicatorView.Style.whiteLarge
+        activityIndicator.color = UIColor.black
+
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
+        fetchRequest.predicate = predicate
+        if let result = try? dataController.viewContext.fetch(fetchRequest){
+            photos = result
+        }
         
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setUpMapView()
-        setupFetchedResultsController()
-        downloadPhotoData()
+        if photos.isEmpty {
+            downloadPhotoData()
+        }
+        
      
     }
     
@@ -56,6 +63,7 @@ class PhotoAlbumViewController: UIViewController {
        fileprivate func setupFetchedResultsController() {
            let fetchRequest:NSFetchRequest<Photo> = Photo.fetchRequest()
           
+        
            if let pin = pin {
                let predicate = NSPredicate(format: "pin == %@", pin)
                fetchRequest.predicate = predicate
@@ -75,23 +83,13 @@ class PhotoAlbumViewController: UIViewController {
                fatalError("The fetch could not be performed: \(error.localizedDescription)")
            }
        }
-    func showAlert(title: String, message: String){
-        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alertVC, animated: true, completion: nil)
-    }
-    
-    // remove all existing images from current place
+
     @IBAction func newCollection(_ sender: Any) {
-        guard let imageObject = fetchedResultsController.fetchedObjects else { return }
-        for image in imageObject {
-            dataController.viewContext.delete(image)
-           do {
-               try dataController.viewContext.save()
-           } catch {
-                print("Unable to delete images")
-            }
-        }
+
+        print(dataController.viewContext.hasChanges)
+        try? self.dataController.viewContext.save()
+        collectionView.reloadData()
+        photos.removeAll()
         downloadPhotoData()
     }
 
@@ -100,15 +98,7 @@ class PhotoAlbumViewController: UIViewController {
     func downloadPhotoData() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
-        // manage activity indicator : start running
-        print("\(String(describing: fetchedResultsController.fetchedObjects?.count))")
-        guard (fetchedResultsController.fetchedObjects?.isEmpty)! else {
-            activityIndicator.isHidden = true
-            activityIndicator.stopAnimating()
-            print("image metadata is already present. no need to re download")
-            return
-        }
-
+        
         let pagesCount = Int(self.pin.pages)
         FlickrApiCall.getPhotos(latitude: pin.latitude,longitude: pin.longitude,
                                totalPageAmount: pagesCount) { (photos, totalPages, error) in
@@ -119,23 +109,35 @@ class PhotoAlbumViewController: UIViewController {
                     self.pin.pages = Int32(Int(totalPages))
                 }
                 for photo in photos {
+                    print("phots  \(photo.url_m)")
+                    let imageURL = URL(string: photo.url_m)
+                    
+                    guard let imageData = try? Data(contentsOf: imageURL!) else {
+                        print("Image does not exist at \(String(describing: imageURL))")
+                        return
+                    }
+                    
+                    
                     let newPhoto = Photo(context: self.dataController.viewContext)
                     newPhoto.imageUrl = URL(string: photo.url_m)
-                    newPhoto.imageData = nil
+                    newPhoto.imageData = imageData
                     newPhoto.pin = self.pin
                     newPhoto.imageID = UUID().uuidString
                     
-                    do {
-                        try self.dataController.viewContext.save()
-                    } catch {
-                        print("Unable to save the photo")
+                    try? self.dataController.viewContext.save()
+                    self.photos.append(newPhoto)
+                    
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                        
+                            self.activityIndicator.isHidden = true
+                            self.activityIndicator.stopAnimating()
                     }
+           
                 }
                 
             }
         }
-            self.activityIndicator.isHidden = true
-            self.activityIndicator.stopAnimating()
       }
 
     }
@@ -147,7 +149,7 @@ class PhotoAlbumViewController: UIViewController {
     
 
     @IBAction func onClickDone(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
     private func removeSelectedImages() {
@@ -166,22 +168,44 @@ class PhotoAlbumViewController: UIViewController {
                    if let selectedImages = fetchedResultsController.fetchedObjects {
                        for image in selectedImages {
                            if image.imageID == imageId {
+                                print("Removed")
+                            
                                dataController.viewContext.delete(image)
+                            showAlert(message: "Successfully deleted", title: "Photo removed", handler: { (action: UIAlertAction!) in
+                                    self.navigationController?.popViewController(animated: true)
+                            })
+                            
+                         self.navigationController?.popViewController(animated: true)
+                           } else {
+                            print("Unable to remove the photo")
+                            showAlert(message: "Failed to delete", title: "Photo not removed", handler: { (action: UIAlertAction!) in
+                                    self.navigationController?.popViewController(animated: true)
+                            })
+                   
+                            
+                         self.navigationController?.popViewController(animated: true)
+                       
                            }
                            do {
                                try dataController.viewContext.save()
                            } catch {
-                               print("Unable to remove the photo")
                            }
                        }
                    }
                }
            }
+        var message = "Please, tap in one photo to remove"
+        if(imageIds.isEmpty){
+            message = "No photos found, try a new collection or choose another place"
+        }
         
+        showAlert(message: message, title: "Failed to delete", handler: nil)
+    
+
     }
 }
 
-extension PhotoAlbumViewController: MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource  {
+extension PhotoAlbumViewController: MKMapViewDelegate {
        
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
            
@@ -212,75 +236,6 @@ extension PhotoAlbumViewController: MKMapViewDelegate, UICollectionViewDelegate,
         mapView.addAnnotation(AnnotationPin(pin: pin))
     }
     
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count = fetchedResultsController.sections?[section].numberOfObjects ?? 0
-        return count
-    }
-      func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.reuseIdentifier, for: indexPath as IndexPath) as! PhotoViewCell
-        guard !(self.fetchedResultsController.fetchedObjects?.isEmpty)! else {
-            print("images are already present.")
-            return cell
-        }
-    
-        // fetch core data
-        let photoData = self.fetchedResultsController.object(at: indexPath)
-
-        
-        if photoData.imageData == nil {
-            // run thread
-            newCollectionBtn.isEnabled = false
-            DispatchQueue.global(qos: .background).async {
-                if let imageData = try? Data(contentsOf: photoData.imageUrl!) {
-                    DispatchQueue.main.async {
-                        photoData.imageData = imageData
-                        do {
-                            try self.dataController.viewContext.save()
-                            
-                        } catch {
-                            print("error in saving image data")
-                        }
-                        
-                        let image = UIImage(data: imageData)!
-                        cell.setPhotoImageView(imageView: image, sizeFit: true)
-         
-                    }
-                }
-        
-            }
-            
-        } else {
-          if let imageData = photoData.imageData {
-                let image = UIImage(data: imageData)!
-                cell.setPhotoImageView(imageView: image, sizeFit: false)
-            }
-            
-        }
-        newCollectionBtn.isEnabled = true
-        return cell
-    }
-
-    /// Set up the Collection View.
-    func setUpCollectionView() {
-        // Set up Collection View
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.allowsMultipleSelection = true
-        configureFlowLayout()
-    }
-
-    /// Set up the flow layout for the Collection View.
-    func configureFlowLayout() {
-        if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-         let space:CGFloat = 3.0
-         let dimension = (view.frame.size.width - (2 * space)) / 3.0
-         flowLayout.minimumInteritemSpacing = space
-         flowLayout.minimumLineSpacing = space
-         flowLayout.itemSize = CGSize(width: dimension, height: dimension)
-        }
-    }
 }
 
 
