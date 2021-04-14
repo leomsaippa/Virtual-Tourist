@@ -58,7 +58,7 @@ class MapViewController: UIViewController {
     @objc func onLongPress(longPressGestureRecognizer: UILongPressGestureRecognizer) {
         let locationCoordinate = mapView.convert(longPressGestureRecognizer.location(in: mapView), toCoordinateFrom: mapView)
         
-
+        if longPressGestureRecognizer.state == UIGestureRecognizer.State.began {
             let geoPos = CLLocation(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
             let annotation = MKPointAnnotation()
             CLGeocoder().reverseGeocodeLocation(geoPos) { (placemarks, error) in
@@ -84,6 +84,7 @@ class MapViewController: UIViewController {
                 
             }
             print(locationCoordinate)
+        }
         
     }
     
