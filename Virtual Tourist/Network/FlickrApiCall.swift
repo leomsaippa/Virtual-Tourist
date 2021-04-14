@@ -61,7 +61,7 @@ class FlickrApiCall{
         
     }
     
-    class func getPhotos(latitude: Double, longitude: Double, totalPageAmount:  Int = 0, completion: @escaping ([Photo], Int, Error?) -> Void) -> Void {
+    class func getPhotos(latitude: Double, longitude: Double, totalPageAmount:  Int = 0, completion: @escaping ([PhotoModel], Int, Error?) -> Void) -> Void {
            let url = getFlickrURL(latitude: latitude, longitude: longitude, totalPageAmount: totalPageAmount)
         let _ = RequestHelper.taskForGETRequest(url: url, responseType: PhotoResponse.self) { response, error in
                if let response = response {
