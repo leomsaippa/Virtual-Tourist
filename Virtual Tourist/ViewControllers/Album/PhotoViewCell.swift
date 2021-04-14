@@ -14,14 +14,7 @@ class PhotoViewCell: UICollectionViewCell {
    
     @IBOutlet weak var photoImageView: UIImageView!
 
-    static let reuseIdentifier = "PhotoViewCell"
+    static let reuseIdentifier = "PhotoCell"
     
-
-    func setPhotoImageView(imageView: UIImage, sizeFit: Bool) {
-        photoImageView.image = imageView
-        if sizeFit == true {
-            photoImageView.sizeToFit()
-        }
-    }
 
 }
