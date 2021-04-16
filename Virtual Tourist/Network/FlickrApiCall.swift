@@ -11,9 +11,9 @@ import UIKit
 
 class FlickrApiCall{
     
-    //TODO: ADD YOUR API KEY AND KEY SECRET HERE
-    static let apiKey = "YOUR API KEY"
-    static let keySecret = "YOUR KEY SECRET"
+
+    static let apiKey = "0a7e1179f73468f0ba09d3e87c1241f7"
+    static let keySecret = "f8698fce474bdf25"
     
     enum Endpoints {
            static let base = "https://www.flickr.com/services/rest/?method=flickr.photos.search"
@@ -56,7 +56,7 @@ class FlickrApiCall{
        let pageNum = getRandomPageNumber(totalPicsAvailable: totalPageAmount, maxNumPicsdisplayed: picsPerPage)
        let searchURL = Endpoints.searchURLString(latitude, longitude, perPage, pageNum).url
     
-        print("\n searchURL")
+        print("searchURL \n \(searchURL)")
         return searchURL
         
     }
@@ -65,8 +65,11 @@ class FlickrApiCall{
            let url = getFlickrURL(latitude: latitude, longitude: longitude, totalPageAmount: totalPageAmount)
         let _ = RequestHelper.taskForGETRequest(url: url, responseType: PhotoResponse.self) { response, error in
                if let response = response {
+                print("response \(response)")
                 completion(response.photos.photo, response.photos.pages, nil)
                } else {
+                print("error")
+
                    completion([], 0, error)
                }
            }
