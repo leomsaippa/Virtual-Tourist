@@ -7,7 +7,8 @@
 
 import Foundation
 import UIKit
-extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+
+extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     
     /// Set up the Collection View.
@@ -33,60 +34,54 @@ extension PhotoAlbumViewController: UICollectionViewDataSource, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("collectionView count")
-        print(photos.count)
-
-        return photos.count
+        let count = fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        return count
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("collectionView ")
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.reuseIdentifier, for: indexPath as IndexPath) as! PhotoViewCell
-        print(photos.count)
-        cell.photoImageView.image = UIImage(data: self.photos[indexPath.row].imageData!)
-        cell.contentView.layer.borderColor = UIColor.white.cgColor
-        cell.contentView.layer.borderWidth = 1.0
-        return cell
-    }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//        let cellsAcross: CGFloat = 1
-//        let spaceBetweenCells: CGFloat = 0
-//        let dim = (collectionView.bounds.width - (cellsAcross - 1) * spaceBetweenCells) / cellsAcross
-//        return CGSize(width: dim, height: dim)
-//    }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoViewCell.reuseIdentifier, for: indexPath as IndexPath) as! PhotoViewCell
+      guard !(self.fetchedResultsController.fetchedObjects?.isEmpty)! else {
+          return cell
+      }
+  
+      let photoData = self.fetchedResultsController.object(at: indexPath)
 
-        dataController.viewContext.delete(photos[indexPath.row])
-        try? self.dataController.viewContext.save()
-        photos.remove(at: indexPath.row)
-        collectionView.reloadData()
-    }
-
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//        let bounds = collectionView.bounds
-//
-//        return CGSize(width: (bounds.width/2)-4, height: bounds.height/2)
-//
-//    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-
-        return UIEdgeInsets(top:2, left:2, bottom:2, right:2)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-
-        return 0
+      
+      if photoData.imageData == nil {
+          DispatchQueue.global(qos: .background).async {
+              if let imageData = try? Data(contentsOf: photoData.imageUrl!) {
+                  DispatchQueue.main.async {
+                      photoData.imageData = imageData
+                      do {
+                          try self.dataController.viewContext.save()
+                          
+                      } catch {
+                        print("Error retrieving data ")
+                      }
+                      
+                      let image = UIImage(data: imageData)!
+                    cell.photoImageView.image = image
+       
+                  }
+              }
+      
+          }
+          
+      } else {
+        if let imageData = photoData.imageData {
+              let image = UIImage(data: imageData)!
+            cell.photoImageView.image = image
+          }
+          
+      }
         
-    }
+    cell.contentView.layer.borderColor = UIColor.white.cgColor
+    cell.contentView.layer.borderWidth = 1.0
+    return cell
+  }
+    
+
     
 }
