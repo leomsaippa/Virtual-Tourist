@@ -15,6 +15,8 @@ import MapKit
 class PhotoAlbumViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     @IBOutlet weak var deleteBtn: UIBarButtonItem!
@@ -32,6 +34,19 @@ class PhotoAlbumViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpCollectionView()
+        collectionView.layoutMargins = UIEdgeInsets(top: 20, left: 8, bottom: 0, right: 0)
+
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.layer.borderWidth = 1
+
+
+        let space:CGFloat = 2.0
+        let widthDimension = (view.frame.size.width - (2 * space)) / 3.0
+
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSize(width: widthDimension, height: widthDimension)
+        
         
         activityIndicator.style = UIActivityIndicatorView.Style.whiteLarge
         activityIndicator.color = UIColor.black
@@ -49,6 +64,9 @@ class PhotoAlbumViewController: UIViewController {
         setUpMapView()
         if photos.isEmpty {
             downloadPhotoData()
+        } else {
+            self.activityIndicator.isHidden = true
+            self.activityIndicator.stopAnimating()
         }
         
      
@@ -124,15 +142,17 @@ class PhotoAlbumViewController: UIViewController {
                     newPhoto.pin = self.pin
                     newPhoto.imageID = UUID().uuidString
                     
-                    try? self.dataController.viewContext.save()
-                    self.photos.append(newPhoto)
-                    
                     DispatchQueue.main.async {
                         self.collectionView.reloadData()
                         
-                            self.activityIndicator.isHidden = true
-                            self.activityIndicator.stopAnimating()
+                        self.activityIndicator.isHidden = true
+                        self.activityIndicator.stopAnimating()
                     }
+                    
+                    try? self.dataController.viewContext.save()
+                    self.photos.append(newPhoto)
+                    
+                 
            
                 }
                 
